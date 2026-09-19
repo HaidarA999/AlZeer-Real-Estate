@@ -1,0 +1,1927 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>لوحة التحكم | الزير للعقارات</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Tajawal:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="css/custom-select.css" />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #f8f7f3;
+        --card: #ffffff;
+        --text: #15161b;
+        --muted: #6c6f77;
+        --line: #e7e3d9;
+        --primary: #0c0d10;
+        --primary-2: #1a1b21;
+        --navy: #0c0d10;
+        --gold: #cea355;
+        --gold-soft: #ecd6a0;
+        --gold-deep: #a2793c;
+        --cream: #f8f7f3;
+        --ink: #15161b;
+        --slate: #6c6f77;
+        --white: #ffffff;
+        --danger: #d84646;
+        --success: #1d9b68;
+        --warning: #d89224;
+        --shadow: 0 10px 30px rgba(12, 13, 16, 0.07);
+      }
+
+      body {
+        font-family: "Tajawal", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+      }
+
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      svg {
+        width: 20px;
+        height: 20px;
+        stroke: currentColor;
+      }
+
+      .dashboard {
+        min-height: 100vh;
+        display: flex;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 250px;
+        background: var(--primary);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        padding: 24px 16px;
+        z-index: 30;
+      }
+
+      .sidebar-logo {
+        padding: 8px 12px 25px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 20px;
+      }
+
+      .sidebar-logo strong {
+        display: block;
+        font-family: "Cairo", sans-serif;
+        font-size: 21px;
+        color: var(--gold);
+      }
+
+      .sidebar-logo span {
+        color: rgba(255, 255, 255, 0.65);
+        font-size: 13px;
+      }
+
+      .sidebar-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+
+      .nav-item {
+        border: 0;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.72);
+        border-radius: 12px;
+        padding: 13px 14px;
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        text-align: right;
+      }
+
+      .nav-item:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .nav-item.active {
+        color: var(--gold-soft);
+        background: rgba(206, 163, 85, 0.16);
+      }
+
+      .sidebar-foot {
+        margin-top: auto;
+        padding: 16px 8px 2px;
+        color: rgba(255, 255, 255, 0.52);
+        font-size: 12px;
+        line-height: 1.7;
+      }
+
+      .sidebar-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.42);
+        z-index: 20;
+      }
+
+      .dashboard-main {
+        width: calc(100% - 250px);
+        margin-right: 250px;
+        min-height: 100vh;
+      }
+
+      .topbar {
+        height: 74px;
+        background: white;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 28px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .topbar h1 {
+        font-family: "Cairo", sans-serif;
+        font-size: 20px;
+      }
+
+      .menu-btn {
+        display: none;
+        width: 42px;
+        height: 42px;
+        border: 1px solid var(--line);
+        background: white;
+        border-radius: 10px;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .admin-chip {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-weight: 700;
+      }
+
+      .admin-avatar {
+        width: 37px;
+        height: 37px;
+        background: var(--primary);
+        color: white;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+      }
+
+      .content {
+        padding: 26px;
+      }
+
+      .view {
+        display: none;
+      }
+
+      .view.active {
+        display: block;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 22px;
+      }
+
+      .stat-card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+        padding: 20px;
+        display: flex;
+        gap: 14px;
+        align-items: center;
+      }
+
+      .stat-icon {
+        flex: 0 0 45px;
+        height: 45px;
+        border-radius: 13px;
+        background: #f1eee6;
+        display: grid;
+        place-items: center;
+        color: var(--primary);
+      }
+
+      .stat-card strong {
+        display: block;
+        font-family: "Cairo", sans-serif;
+        font-size: 24px;
+        line-height: 1.1;
+        margin-bottom: 4px;
+      }
+
+      .stat-card span {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .panel,
+      .table-wrap {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+      }
+
+      .panel {
+        padding: 20px;
+      }
+
+      .panel h2 {
+        font-family: "Cairo", sans-serif;
+        font-size: 17px;
+        margin-bottom: 16px;
+      }
+
+      .activity-list {
+        list-style: none;
+      }
+
+      .activity-list li {
+        padding: 13px 0;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .activity-list li:last-child {
+        border-bottom: 0;
+      }
+
+      .activity-list time {
+        color: var(--muted);
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      .section-toolbar {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+      }
+
+      .search-box {
+        position: relative;
+        flex: 1;
+        max-width: 420px;
+      }
+
+      .search-box input {
+        width: 100%;
+        height: 44px;
+        border: 1px solid var(--line);
+        background: white;
+        border-radius: 11px;
+        padding: 0 14px 0 45px;
+        outline: none;
+      }
+
+      .search-box input:focus {
+        border-color: var(--gold);
+      }
+
+      .search-box svg {
+        position: absolute;
+        left: 14px;
+        top: 12px;
+        color: #9a968b;
+      }
+
+      .btn {
+        border: 0;
+        border-radius: 10px;
+        padding: 10px 15px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        font-weight: 700;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: var(--gold);
+        color: var(--primary);
+      }
+
+      .btn-ghost {
+        background: #f1eee6;
+        color: var(--text);
+      }
+
+      .btn-danger {
+        color: var(--danger);
+        background: #fff0f0;
+      }
+
+      .btn-edit {
+        color: var(--primary);
+        background: #f1eee6;
+      }
+
+      .btn-star {
+        color: #9a7203;
+        background: #fff8e6;
+      }
+
+      .btn-star.active {
+        color: var(--primary);
+        background: var(--gold);
+      }
+
+      .btn-small {
+        padding: 7px 10px;
+        font-size: 13px;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 650px;
+      }
+
+      th,
+      td {
+        padding: 15px 18px;
+        text-align: right;
+        border-bottom: 1px solid var(--line);
+      }
+
+      th {
+        color: var(--muted);
+        font-size: 13px;
+        background: #faf8f3;
+      }
+
+      tbody tr:last-child td {
+        border-bottom: 0;
+      }
+
+      .prop-cell {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .prop-cell > div {
+        min-width: 0;
+        flex: 1;
+      }
+
+      .prop-cell strong,
+      .prop-cell small {
+        display: block;
+        overflow-wrap: break-word;
+      }
+
+      .prop-image {
+        width: 58px;
+        height: 42px;
+        border-radius: 8px;
+        object-fit: cover;
+        background: #f1eee6;
+      }
+
+      .prop-image-placeholder {
+        width: 58px;
+        height: 42px;
+        border-radius: 8px;
+        display: grid;
+        place-items: center;
+        background: #f1eee6;
+        color: #8a8578;
+        font-size: 11px;
+      }
+
+      .prop-cell small {
+        color: var(--muted);
+      }
+
+      .status {
+        display: inline-flex;
+        border-radius: 999px;
+        padding: 5px 10px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .status.available {
+        background: #e9f8f1;
+        color: var(--success);
+      }
+
+      .status.reserved {
+        background: #fff4dd;
+        color: var(--warning);
+      }
+
+      .status.sold {
+        background: #f0eee8;
+        color: #6c6f77;
+      }
+
+      .listing-pill {
+        display: inline-flex;
+        border-radius: 999px;
+        padding: 3px 9px;
+        font-size: 11px;
+        font-weight: 700;
+        margin-inline-start: 6px;
+      }
+
+      .listing-pill.sale {
+        background: #e9f8f1;
+        color: #1f9d63;
+      }
+
+      .listing-pill.rent {
+        background: #f6ecd6;
+        color: #8a6a2f;
+      }
+
+      .actions {
+        display: flex;
+        gap: 7px;
+        flex-wrap: wrap;
+      }
+
+      .empty {
+        text-align: center;
+        padding: 35px !important;
+        color: var(--muted);
+      }
+
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: rgba(12, 13, 16, 0.6);
+        padding: 20px;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-overlay.open {
+        display: flex;
+      }
+
+      .modal-box {
+        width: min(680px, 100%);
+        max-height: 92vh;
+        overflow-y: auto;
+        background: white;
+        border-radius: 17px;
+        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.22);
+      }
+
+      .modal-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .modal-head h3 {
+        font-family: "Cairo", sans-serif;
+        font-size: 17px;
+      }
+
+      .modal-close {
+        border: 0;
+        background: #f4f1ea;
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        font-size: 24px;
+        line-height: 1;
+      }
+
+      form {
+        padding: 20px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .form-field.full {
+        grid-column: 1 / -1;
+      }
+
+      .form-field label {
+        display: block;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 7px;
+      }
+
+      .form-field input,
+      .form-field select {
+        width: 100%;
+        height: 43px;
+        border-radius: 9px;
+        border: 1px solid var(--line);
+        padding: 0 12px;
+        outline: none;
+        background: white;
+      }
+
+      .form-field .cs-trigger {
+        height: 43px;
+        border-radius: 9px;
+        padding: 0 12px;
+        font-size: inherit;
+      }
+
+      .form-field textarea {
+        width: 100%;
+        min-height: 80px;
+        border-radius: 9px;
+        border: 1px solid var(--line);
+        padding: 10px 12px;
+        outline: none;
+        background: white;
+        font-family: inherit;
+        resize: vertical;
+      }
+
+      .field-hint {
+        display: block;
+        margin-top: 6px;
+        font-size: 12px;
+        line-height: 1.7;
+        color: #6c6f77;
+      }
+
+      .field-hint a {
+        color: var(--gold-deep);
+        font-weight: 700;
+      }
+
+      #propMapUrl {
+        text-align: left;
+      }
+
+      .images-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .form-field-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: #fbfaf7;
+      }
+
+      .form-field-checkbox input {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--gold);
+      }
+
+      .form-field-checkbox label {
+        font-size: 13px;
+        font-weight: 700;
+        margin: 0;
+      }
+
+      .form-field-checkbox small {
+        display: block;
+        font-weight: 400;
+        color: #6c6f77;
+        margin-top: 2px;
+      }
+
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 9px;
+        margin-top: 22px;
+      }
+
+      .toast {
+        position: fixed;
+        bottom: 22px;
+        left: 22px;
+        z-index: 150;
+        background: var(--primary);
+        color: white;
+        border-radius: 11px;
+        padding: 12px 15px;
+        display: flex;
+        gap: 9px;
+        align-items: center;
+        transform: translateY(90px);
+        opacity: 0;
+        transition: 0.25s ease;
+        max-width: 360px;
+      }
+
+      .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .toast.error {
+        background: #a63737;
+      }
+
+      @media (max-width: 1050px) {
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 760px) {
+        .sidebar {
+          transform: translateX(100%);
+          transition: 0.25s ease;
+        }
+
+        .sidebar.open {
+          transform: translateX(0);
+        }
+
+        .sidebar-overlay.open {
+          display: block;
+        }
+
+        .dashboard-main {
+          width: 100%;
+          margin-right: 0;
+        }
+
+        .menu-btn {
+          display: inline-flex;
+        }
+
+        .topbar {
+          padding: 0 16px;
+        }
+
+        .content {
+          padding: 16px;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .section-toolbar {
+          flex-direction: column;
+        }
+
+        .search-box {
+          max-width: none;
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .form-field.full {
+          grid-column: auto;
+        }
+
+        .images-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .prop-cell {
+          gap: 8px;
+        }
+
+        table thead {
+          display: none;
+        }
+
+        table,
+        table tbody,
+        table tr,
+        table td {
+          display: block;
+          width: 100%;
+          min-width: 0;
+        }
+
+        .table-wrap {
+          overflow-x: visible;
+        }
+
+        table tr {
+          border: 1px solid var(--line);
+          border-radius: 12px;
+          margin-bottom: 12px;
+          padding: 10px;
+        }
+
+        table td {
+          border: none !important;
+          padding: 8px 4px !important;
+        }
+
+        table td:not(:first-child)::before {
+          content: attr(data-label);
+          display: block;
+          font-size: 11px;
+          font-weight: 700;
+          color: var(--muted);
+          margin-bottom: 4px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="dashboard">
+      <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+          <strong>الزير للعقارات</strong>
+          <span>لوحة التحكم</span>
+        </div>
+
+        <nav class="sidebar-nav">
+          <button class="nav-item active" data-view="overview">
+            <svg viewBox="0 0 24 24" stroke-width="2" fill="none">
+              <rect x="3" y="3" width="7" height="9" rx="1"></rect>
+              <rect x="14" y="3" width="7" height="5" rx="1"></rect>
+              <rect x="14" y="12" width="7" height="9" rx="1"></rect>
+              <rect x="3" y="16" width="7" height="5" rx="1"></rect>
+            </svg>
+            نظرة عامة
+          </button>
+
+          <button class="nav-item" data-view="properties">
+            <svg viewBox="0 0 24 24" stroke-width="2" fill="none">
+              <path d="m3 12 9-9 9 9"></path>
+              <path
+                d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"
+              ></path>
+            </svg>
+            العقارات
+          </button>
+
+          <button class="nav-item" data-view="users">
+            <svg
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            المستخدمين
+          </button>
+        </nav>
+
+        <div class="sidebar-foot">البيانات محفوظة على السيرفر عبر SQLite</div>
+      </aside>
+
+      <div class="dashboard-main">
+        <header class="topbar">
+          <div style="display: flex; align-items: center; gap: 0.8rem">
+            <button class="menu-btn" id="menuBtn" aria-label="فتح القائمة">
+              <svg
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+            </button>
+            <h1 id="pageTitle">نظرة عامة</h1>
+          </div>
+
+          <div class="topbar-right">
+            <div class="admin-chip">
+              <div class="admin-avatar">A</div>
+              <span id="adminUsername">...</span>
+            </div>
+            <button
+              class="btn btn-ghost"
+              id="logoutBtn"
+              type="button"
+              style="padding: 0.5rem 0.9rem"
+            >
+              تسجيل خروج
+            </button>
+          </div>
+        </header>
+
+        <div class="content">
+          <section class="view active" id="view-overview">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    stroke-width="2"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path d="m3 12 9-9 9 9"></path>
+                    <path
+                      d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"
+                    ></path>
+                  </svg>
+                </div>
+                <div>
+                  <strong class="num" id="statProperties">--</strong>
+                  <span>عقار معروض</span>
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    stroke-width="2"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path
+                      d="M12 2 3 6v6c0 5 3.8 8.7 9 10 5.2-1.3 9-5 9-10V6l-9-4Z"
+                    ></path>
+                  </svg>
+                </div>
+                <div>
+                  <strong class="num" id="statForSale">--</strong>
+                  <span>عقار للبيع</span>
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    stroke-width="2"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <strong class="num" id="statForRent">--</strong>
+                  <span>عقار للإيجار</span>
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    stroke-width="2"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path
+                      d="M12 17.75 5.83 21l1.18-6.88L2 9.24l6.91-1L12 2l3.09 6.24 6.91 1-5.01 4.88L18.17 21Z"
+                    ></path>
+                  </svg>
+                </div>
+                <div>
+                  <strong class="num" id="statFeatured">--</strong>
+                  <span>عقار مميز</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <h2>آخر النشاطات</h2>
+              <ul class="activity-list" id="activityList">
+                <li><span>جاري تحميل النشاطات...</span></li>
+              </ul>
+            </div>
+          </section>
+
+          <section class="view" id="view-properties">
+            <div class="section-toolbar">
+              <div class="search-box">
+                <input
+                  type="text"
+                  id="propertySearch"
+                  placeholder="ابحث عن عقار أو منطقة"
+                />
+                <svg
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <circle cx="11" cy="11" r="7"></circle>
+                  <path d="m21 21-4.3-4.3"></path>
+                </svg>
+              </div>
+
+              <span
+                id="featuredCounter"
+                style="font-size: 13px; font-weight: 700; color: #6c6f77"
+                >⭐ مميزة: -- / 6</span
+              >
+
+              <button class="btn btn-primary" id="addPropertyBtn">
+                <svg
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path d="M12 5v14M5 12h14"></path>
+                </svg>
+                إضافة عقار
+              </button>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>العقار</th>
+                    <th>المنطقة</th>
+                    <th>السعر</th>
+                    <th>الحالة</th>
+                    <th>إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="propertiesTableBody"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="view" id="view-users">
+            <div class="section-toolbar">
+              <p style="font-size: 13px; color: #6c6f77; margin: 0">
+                هؤلاء هم الاشخاص المسموح لهم بالدخول الى لوحة التحكم...يمكنك
+                اضافة المستخدمين من هنا
+              </p>
+              <button class="btn btn-primary" id="addUserBtn">
+                <svg
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path d="M12 5v14M5 12h14"></path>
+                </svg>
+                إضافة مستخدم
+              </button>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>اسم المستخدم</th>
+                    <th>تاريخ الإضافة</th>
+                    <th>إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="usersTableBody"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="propertyModalOverlay">
+      <div class="modal-box">
+        <div class="modal-head">
+          <h3 id="propertyModalTitle">إضافة عقار جديد</h3>
+          <button class="modal-close" id="propertyModalClose" type="button">
+            ×
+          </button>
+        </div>
+
+        <form id="propertyForm">
+          <div class="form-grid">
+            <div class="form-field full">
+              <label for="propTitle">اسم / عنوان العقار</label>
+              <input type="text" id="propTitle" required />
+            </div>
+
+            <div class="form-field">
+              <label for="propType">نوع العقار</label>
+              <select id="propType" class="js-custom-select" required>
+                <option value="شقة">شقة</option>
+                <option value="فيلا">فيلا</option>
+                <option value="محل تجاري">محل تجاري</option>
+                <option value="مكتب">مكتب</option>
+                <option value="أرض">أرض</option>
+                <option value="مستودع">مستودع</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="propListingType">نوع العرض</label>
+              <select id="propListingType" class="js-custom-select" required>
+                <option value="sale">بيع</option>
+                <option value="rent">إيجار</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="propRegion">المنطقة</label>
+              <select id="propRegion" class="js-custom-select" required></select>
+            </div>
+
+            <div class="form-field">
+              <label for="propFinish">حالة الإكساء</label>
+              <select id="propFinish" class="js-custom-select" required>
+                <option value="سوبر ديلوكس">سوبر ديلوكس</option>
+                <option value="ديلوكس">ديلوكس</option>
+                <option value="ممتاز">ممتاز</option>
+                <option value="عادي">عادي</option>
+                <option value="على الطوب">على الطوب</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="propPrice">السعر ($)</label>
+              <input type="number" id="propPrice" required />
+            </div>
+
+            <div class="form-field">
+              <label for="propArea">المساحة (م²)</label>
+              <input type="number" id="propArea" value="0" />
+            </div>
+
+            <div class="form-field">
+              <label for="propBedrooms">عدد غرف النوم</label>
+              <input type="number" id="propBedrooms" value="0" />
+            </div>
+
+            <div class="form-field">
+              <label for="propBathrooms">عدد الحمامات</label>
+              <input type="number" id="propBathrooms" value="0" />
+            </div>
+
+            <div class="form-field">
+              <label for="propStatus">حالة العقار</label>
+              <select id="propStatus" class="js-custom-select">
+                <option value="available">متاح</option>
+                <option value="reserved">محجوز</option>
+                <option value="sold">تم البيع / التأجير</option>
+              </select>
+            </div>
+
+            <div class="form-field full">
+              <label for="propVideo">رابط فيديو العقار (اختياري)</label>
+              <input type="text" id="propVideo" placeholder="رابط فيديو mp4" />
+            </div>
+
+            <div class="form-field full">
+              <label for="propMapUrl">
+                موقع العقار على غوغل مابس (اختياري)
+              </label>
+              <input
+                type="text"
+                id="propMapUrl"
+                dir="ltr"
+                placeholder="https://maps.app.goo.gl/..."
+                autocomplete="off"
+              />
+              <small class="field-hint">
+                افتح
+                <a
+                  href="https://www.google.com/maps"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >غوغل مابس</a
+                >
+                ← دوّر عالعقار ← اضغط <strong>مشاركة (Share)</strong> ← انسخ
+                الرابط والصقو هون.
+                <a href="#" id="propMapTest" style="display: none"
+                  >جرّب الرابط ↗</a
+                >
+              </small>
+            </div>
+
+            <div class="form-field full">
+              <label for="propDesc">وصف العقار</label>
+              <textarea
+                id="propDesc"
+                placeholder="اكتب وصف قصير عن حالة العقار، المواصفات، أو أي تفاصيل مهمة..."
+              ></textarea>
+            </div>
+
+            <div class="form-field full">
+              <label>صور العقار (حتى 6 صور، يجب صورة وحدة عالأقل)</label>
+              <div class="images-grid">
+                <input
+                  type="text"
+                  id="propImg1"
+                  placeholder="رابط الصورة 1 (أساسية)"
+                />
+                <input type="text" id="propImg2" placeholder="رابط الصورة 2" />
+                <input type="text" id="propImg3" placeholder="رابط الصورة 3" />
+                <input type="text" id="propImg4" placeholder="رابط الصورة 4" />
+                <input type="text" id="propImg5" placeholder="رابط الصورة 5" />
+                <input type="text" id="propImg6" placeholder="رابط الصورة 6" />
+              </div>
+            </div>
+
+            <div class="form-field full">
+              <div class="form-field-checkbox">
+                <input type="checkbox" id="propFeatured" />
+                <label for="propFeatured">
+                  ⭐ عرضه ضمن العقارات المميزة هالأسبوع (الصفحة الرئيسية)
+                  <small id="featuredHint"
+                    >الحد الأقصى 6 عقارات مميزة بنفس الوقت</small
+                  >
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn btn-ghost" id="propertyCancelBtn">
+              إلغاء
+            </button>
+            <button type="submit" class="btn btn-primary">حفظ</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="userModalOverlay">
+      <div class="modal-box">
+        <div class="modal-head">
+          <h3>إضافة مستخدم جديد</h3>
+          <button class="modal-close" id="userModalClose" type="button">
+            ×
+          </button>
+        </div>
+
+        <form id="userForm">
+          <div class="form-grid">
+            <div class="form-field full">
+              <label for="userUsername">اسم المستخدم</label>
+              <input type="text" id="userUsername" required />
+            </div>
+
+            <div class="form-field full">
+              <label for="userPassword">كلمة السر (6 أحرف عالأقل)</label>
+              <input type="password" id="userPassword" minlength="6" required />
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn btn-ghost" id="userCancelBtn">
+              إلغاء
+            </button>
+            <button type="submit" class="btn btn-primary">حفظ</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="toast" id="toast">
+      <span id="toastMsg"></span>
+    </div>
+
+    <script src="js/custom-select.js"></script>
+    <script>
+      // =====================================================
+      // ثوابت وحالة عامة
+      // =====================================================
+
+      const REGIONS = [
+        "دمشق",
+        "ريف دمشق",
+        "حلب",
+        "حمص",
+        "حماة",
+        "اللاذقية",
+        "طرطوس",
+        "إدلب",
+        "درعا",
+        "السويداء",
+        "القنيطرة",
+        "دير الزور",
+        "الرقة",
+        "الحسكة",
+      ];
+
+      // تعبئة قائمة المناطق بفورم العقار
+      document.getElementById("propRegion").innerHTML = REGIONS.map(
+        (r) => `<option value="${r}">${r}</option>`,
+      ).join("");
+
+      let properties = [];
+      let editingPropertyId = null;
+
+      const $ = (id) => document.getElementById(id);
+
+      const statusLabels = {
+        available: "متاح",
+        reserved: "محجوز",
+        sold: "تم البيع / التأجير",
+      };
+
+      // =====================================================
+      // API helper
+      // =====================================================
+
+      async function api(url, options = {}) {
+        const response = await fetch(url, {
+          ...options,
+          headers: {
+            "Content-Type": "application/json",
+            ...(options.headers || {}),
+          },
+        });
+
+        let data = {};
+
+        try {
+          data = await response.json();
+        } catch (_) {}
+
+        if (!response.ok || data.success === false) {
+          throw new Error(data.error || "حدث خطأ أثناء الاتصال بالسيرفر");
+        }
+
+        return data;
+      }
+
+      // =====================================================
+      // Helpers
+      // =====================================================
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function money(value) {
+        const number = Number(value || 0);
+
+        return (
+          new Intl.NumberFormat("en-US", {
+            maximumFractionDigits: 0,
+          }).format(number) + " $"
+        );
+      }
+
+      function showToast(message, error = false) {
+        const toast = $("toast");
+
+        $("toastMsg").textContent = message;
+
+        toast.classList.toggle("error", error);
+        toast.classList.add("show");
+
+        clearTimeout(showToast.timer);
+
+        showToast.timer = setTimeout(() => {
+          toast.classList.remove("show");
+        }, 2800);
+      }
+
+      function closeSidebar() {
+        $("sidebar").classList.remove("open");
+        $("sidebarOverlay").classList.remove("open");
+      }
+
+      function formatActivityDate(value) {
+        if (!value) return "";
+
+        let text = String(value);
+
+        // SQLite CURRENT_TIMESTAMP يرجع YYYY-MM-DD HH:MM:SS
+        if (!text.includes("T")) {
+          text = text.replace(" ", "T") + "Z";
+        }
+
+        const date = new Date(text);
+
+        if (Number.isNaN(date.getTime())) {
+          return value;
+        }
+
+        return date.toLocaleString("ar", {
+          dateStyle: "short",
+          timeStyle: "short",
+        });
+      }
+
+      function imageCell(image, alt) {
+        if (!image) {
+          return `<div class="prop-image-placeholder">بدون صورة</div>`;
+        }
+
+        return `
+        <img
+          class="prop-image"
+          src="${escapeHtml(image)}"
+          alt="${escapeHtml(alt)}"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';"
+        >
+        <div class="prop-image-placeholder" style="display:none;">تعذر التحميل</div>
+      `;
+      }
+
+      // =====================================================
+      // Views / Sidebar
+      // =====================================================
+
+      const viewTitles = {
+        overview: "نظرة عامة",
+        properties: "إدارة العقارات",
+        users: "المستخدمين",
+      };
+
+      document.querySelectorAll(".nav-item").forEach((button) => {
+        button.addEventListener("click", () => {
+          const view = button.dataset.view;
+
+          document.querySelectorAll(".nav-item").forEach((item) => {
+            item.classList.remove("active");
+          });
+
+          button.classList.add("active");
+
+          document.querySelectorAll(".view").forEach((section) => {
+            section.classList.remove("active");
+          });
+
+          $("view-" + view).classList.add("active");
+          $("pageTitle").textContent = viewTitles[view];
+
+          closeSidebar();
+
+          if (view === "overview") {
+            loadOverview();
+          }
+
+          if (view === "properties") {
+            loadProperties();
+          }
+
+          if (view === "users") {
+            loadUsers();
+          }
+        });
+      });
+
+      $("menuBtn").addEventListener("click", () => {
+        $("sidebar").classList.add("open");
+        $("sidebarOverlay").classList.add("open");
+      });
+
+      $("sidebarOverlay").addEventListener("click", closeSidebar);
+
+      // =====================================================
+      // Dashboard
+      // =====================================================
+
+      async function loadStats() {
+        const data = await api("/api/stats");
+
+        $("statProperties").textContent = data.properties ?? 0;
+        $("statForSale").textContent = data.for_sale ?? 0;
+        $("statForRent").textContent = data.for_rent ?? 0;
+        $("statFeatured").textContent = data.featured_count ?? 0;
+      }
+
+      async function loadActivities() {
+        const data = await api("/api/activities");
+
+        const list = $("activityList");
+        const items = data.activities || [];
+
+        if (!items.length) {
+          list.innerHTML = `
+          <li>
+            <span>لا يوجد أي نشاط مسجل حتى الآن.</span>
+          </li>
+        `;
+          return;
+        }
+
+        list.innerHTML = items
+          .map(
+            (item) => `
+        <li>
+          <span>${escapeHtml(item.message)}</span>
+          <time>${escapeHtml(formatActivityDate(item.created_at))}</time>
+        </li>
+      `,
+          )
+          .join("");
+      }
+
+      async function loadOverview() {
+        try {
+          await Promise.all([loadStats(), loadActivities()]);
+        } catch (error) {
+          showToast(error.message, true);
+        }
+      }
+
+      // =====================================================
+      // Properties
+      // =====================================================
+
+      async function loadProperties() {
+        try {
+          const data = await api("/api/properties");
+          properties = data.properties || [];
+          renderProperties();
+          updateFeaturedCounter();
+        } catch (error) {
+          showToast(error.message, true);
+        }
+      }
+
+      function updateFeaturedCounter() {
+        const count = properties.filter((p) => p.featured).length;
+        $("featuredCounter").textContent = `⭐ مميزة: ${count} / 6`;
+      }
+
+      function renderProperties() {
+        const query = $("propertySearch").value.trim().toLowerCase();
+
+        const filtered = properties.filter((p) => {
+          const haystack =
+            `${p.title} ${p.region} ${p.property_type}`.toLowerCase();
+          return haystack.includes(query);
+        });
+
+        const tbody = $("propertiesTableBody");
+
+        if (!filtered.length) {
+          tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="empty">لا توجد عقارات.</td>
+          </tr>
+        `;
+          return;
+        }
+
+        tbody.innerHTML = filtered
+          .map(
+            (p) => `
+        <tr>
+          <td data-label="العقار">
+            <div class="prop-cell">
+              ${imageCell(p.image, p.title)}
+              <div>
+                <strong>${escapeHtml(p.title)} ${p.featured ? "⭐" : ""}</strong>
+                <small>
+                  ${escapeHtml(p.property_type)}
+                  •
+                  ${Number(p.area_sqm || 0).toLocaleString("en-US")} م²
+                </small>
+              </div>
+            </div>
+          </td>
+
+          <td data-label="المنطقة">${escapeHtml(p.region)}</td>
+
+          <td data-label="السعر">
+            ${money(p.price)}
+            <span class="listing-pill ${p.listing_type}">${escapeHtml(p.listing_type_label)}</span>
+          </td>
+
+          <td data-label="الحالة">
+            <span class="status ${escapeHtml(p.status)}">
+              ${escapeHtml(statusLabels[p.status] || p.status)}
+            </span>
+          </td>
+
+          <td data-label="إجراءات">
+            <div class="actions">
+              <button
+                class="btn btn-small btn-star ${p.featured ? "active" : ""}"
+                onclick="toggleFeaturedProperty(${p.id})"
+                title="${p.featured ? "شيلها من المميزة" : "ضيفها للمميزة"}"
+              >
+                ⭐
+              </button>
+
+              <button class="btn btn-small btn-edit" onclick="openEditProperty(${p.id})">
+                تعديل
+              </button>
+
+              <button class="btn btn-small btn-danger" onclick="deleteProperty(${p.id})">
+                حذف
+              </button>
+            </div>
+          </td>
+        </tr>
+      `,
+          )
+          .join("");
+      }
+
+      $("propertySearch").addEventListener("input", renderProperties);
+
+      window.toggleFeaturedProperty = async function (id) {
+        const p = properties.find((item) => Number(item.id) === Number(id));
+        if (!p) return;
+
+        try {
+          await api(`/api/properties/${id}`, {
+            method: "PUT",
+            body: JSON.stringify({ featured: !p.featured }),
+          });
+
+          showToast(p.featured ? "تم حذفها من المميزة" : "تمت إضافتها للمميزة");
+
+          await loadProperties();
+        } catch (error) {
+          showToast(error.message, true);
+        }
+      };
+
+      function resetPropertyFormDefaults() {
+        $("propType").value = "شقة";
+        $("propListingType").value = "sale";
+        $("propRegion").value = "دمشق";
+        $("propFinish").value = "ديلوكس";
+        $("propArea").value = "0";
+        $("propBedrooms").value = "0";
+        $("propBathrooms").value = "0";
+        $("propStatus").value = "available";
+        $("propVideo").value = "";
+        $("propMapUrl").value = "";
+        syncMapTestLink();
+        $("propFeatured").checked = false;
+      }
+
+      // رابط "جرّب الرابط": بيظهر بس لما يكون في رابط http مكتوب
+      function syncMapTestLink() {
+        const value = $("propMapUrl").value.trim();
+        const link = $("propMapTest");
+        const isUrl = /^https?:\/\//i.test(value);
+
+        link.style.display = isUrl ? "" : "none";
+        link.href = isUrl ? value : "#";
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+      }
+
+      $("propMapUrl").addEventListener("input", syncMapTestLink);
+
+      function openPropertyModal() {
+        $("propertyModalOverlay").classList.add("open");
+      }
+
+      function closePropertyModal() {
+        $("propertyModalOverlay").classList.remove("open");
+        $("propertyForm").reset();
+        resetPropertyFormDefaults();
+        editingPropertyId = null;
+      }
+
+      $("addPropertyBtn").addEventListener("click", () => {
+        editingPropertyId = null;
+
+        $("propertyModalTitle").textContent = "إضافة عقار جديد";
+        $("propertyForm").reset();
+        resetPropertyFormDefaults();
+
+        openPropertyModal();
+      });
+
+      $("propertyModalClose").addEventListener("click", closePropertyModal);
+      $("propertyCancelBtn").addEventListener("click", closePropertyModal);
+
+      $("propertyModalOverlay").addEventListener("click", (event) => {
+        if (event.target === $("propertyModalOverlay")) {
+          closePropertyModal();
+        }
+      });
+
+      window.openEditProperty = function (id) {
+        const p = properties.find((item) => Number(item.id) === Number(id));
+
+        if (!p) return;
+
+        editingPropertyId = p.id;
+
+        $("propertyModalTitle").textContent = "تعديل العقار";
+        $("propTitle").value = p.title || "";
+        $("propType").value = p.property_type || "شقة";
+        $("propListingType").value = p.listing_type || "sale";
+        $("propRegion").value = p.region || "دمشق";
+        $("propFinish").value = p.finish_quality || "ديلوكس";
+        $("propPrice").value = p.price || "";
+        $("propArea").value = p.area_sqm || 0;
+        $("propBedrooms").value = p.bedrooms || 0;
+        $("propBathrooms").value = p.bathrooms || 0;
+        $("propStatus").value = p.status || "available";
+        $("propVideo").value = p.video || "";
+        $("propDesc").value = p.description || "";
+        $("propMapUrl").value = p.map_url || "";
+        syncMapTestLink();
+        $("propFeatured").checked = !!p.featured;
+
+        const images = Array.isArray(p.images) ? p.images : [];
+        for (let i = 0; i < 6; i++) {
+          $(`propImg${i + 1}`).value = images[i] || "";
+        }
+        if (!images.length && p.image) {
+          $("propImg1").value = p.image;
+        }
+
+        openPropertyModal();
+      };
+
+      $("propertyForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const images = [1, 2, 3, 4, 5, 6]
+          .map((n) => $(`propImg${n}`).value.trim())
+          .filter(Boolean);
+
+        if (!images.length) {
+          showToast("لازم تحط صورة وحدة عالأقل", true);
+          return;
+        }
+
+        const payload = {
+          title: $("propTitle").value.trim(),
+          property_type: $("propType").value,
+          listing_type: $("propListingType").value,
+          region: $("propRegion").value,
+          finish_quality: $("propFinish").value,
+          price: Number($("propPrice").value),
+          area_sqm: Number($("propArea").value || 0),
+          bedrooms: Number($("propBedrooms").value || 0),
+          bathrooms: Number($("propBathrooms").value || 0),
+          status: $("propStatus").value,
+          video: $("propVideo").value.trim(),
+          map_url: $("propMapUrl").value.trim(),
+          description: $("propDesc").value.trim(),
+          images,
+          featured: $("propFeatured").checked,
+        };
+
+        try {
+          let result;
+
+          if (editingPropertyId) {
+            result = await api(`/api/properties/${editingPropertyId}`, {
+              method: "PUT",
+              body: JSON.stringify(payload),
+            });
+
+            showToast("تم تعديل العقار بنجاح");
+          } else {
+            result = await api("/api/properties", {
+              method: "POST",
+              body: JSON.stringify(payload),
+            });
+
+            showToast("تمت إضافة العقار بنجاح");
+          }
+
+          if (result.map_warning) {
+            showToast(result.map_warning, true);
+          }
+
+          closePropertyModal();
+
+          await Promise.all([loadProperties(), loadStats(), loadActivities()]);
+        } catch (error) {
+          showToast(error.message, true);
+        }
+      });
+
+      window.deleteProperty = async function (id) {
+        const p = properties.find((item) => Number(item.id) === Number(id));
+
+        if (!p) return;
+
+        if (!confirm(`هل تريد حذف العقار "${p.title}"؟`)) {
+          return;
+        }
+
+        try {
+          await api(`/api/properties/${id}`, {
+            method: "DELETE",
+          });
+
+          showToast("تم حذف العقار");
+
+          await Promise.all([loadProperties(), loadStats(), loadActivities()]);
+        } catch (error) {
+          showToast(error.message, true);
+        }
+      };
+
+      // =====================================================
+      // Users
+      // =====================================================
+
+      async function loadUsers() {
+        try {
+          const data = await api("/api/users");
+          const users = data.users || [];
+
+          $("usersTableBody").innerHTML = users
+            .map(
+              (u) => `
+          <tr>
+            <td data-label="اسم المستخدم">${u.username}</td>
+            <td data-label="تاريخ الإضافة">${new Date(u.created_at).toLocaleDateString("ar")}</td>
+            <td data-label="إجراءات">
+              <button class="btn btn-small btn-danger" onclick="deleteUser(${u.id})">
+                حذف
+              </button>
+            </td>
+          </tr>
+        `,
+            )
+            .join("");
+        } catch (error) {
+          showToast(error.message, true);
+        }
+      }
+
+      function openUserModal() {
+        $("userForm").reset();
+        $("userModalOverlay").classList.add("open");
+      }
+
+      function closeUserModal() {
+        $("userModalOverlay").classList.remove("open");
+        $("userForm").reset();
+      }
+
+      $("addUserBtn").addEventListener("click", openUserModal);
+      $("userModalClose").addEventListener("click", closeUserModal);
+      $("userCancelBtn").addEventListener("click", closeUserModal);
+      $("userModalOverlay").addEventListener("click", (event) => {
+        if (event.target === $("userModalOverlay")) {
+          closeUserModal();
+        }
+      });
+
+      $("userForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        try {
+          await api("/api/users", {
+            method: "POST",
+            body: JSON.stringify({
+              username: $("userUsername").value.trim(),
+              password: $("userPassword").value,
+            }),
+          });
+
+          showToast("تمت إضافة المستخدم بنجاح");
+          closeUserModal();
+          await loadUsers();
+        } catch (error) {
+          showToast(error.message, true);
+        }
+      });
+
+      window.deleteUser = async function (id) {
+        if (
+          !confirm(
+            "هل تريدين حذف هذا المستخدم؟ رح يفقد صلاحية الدخول عاللوحة فورًا.",
+          )
+        ) {
+          return;
+        }
+
+        try {
+          await api(`/api/users/${id}`, {
+            method: "DELETE",
+          });
+
+          showToast("تم حذف المستخدم");
+          await loadUsers();
+        } catch (error) {
+          showToast(error.message, true);
+        }
+      };
+
+      // =====================================================
+      // تسجيل الخروج
+      // =====================================================
+
+      const logoutBtn = document.getElementById("logoutBtn");
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", async () => {
+          if (!confirm("هل تريد تسجيل الخروج؟")) return;
+          try {
+            await fetch("/api/logout", { method: "POST" });
+          } finally {
+            window.location.href = "Login.html";
+          }
+        });
+      }
+
+      // =====================================================
+      // تحديث دوري للإحصائيات والنشاطات
+      // =====================================================
+
+      setInterval(async () => {
+        try {
+          await loadStats();
+
+          if ($("view-overview").classList.contains("active")) {
+            await loadActivities();
+          }
+        } catch (_) {}
+      }, 15000);
+
+      // =====================================================
+      // First load
+      // =====================================================
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          const me = await fetch("/api/me").then((r) => r.json());
+          if (me.logged_in) {
+            $("adminUsername").textContent = me.username;
+          }
+        } catch (_) {}
+
+        try {
+          await Promise.all([loadStats(), loadActivities(), loadProperties()]);
+        } catch (error) {
+          showToast(
+            "تعذر الاتصال بالباك إند. تأكد أنك فتحت الموقع من Flask وليس مباشرة من الملف.",
+            true,
+          );
+        }
+      });
+    </script>
+  </body>
+</html>

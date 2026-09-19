@@ -1,0 +1,990 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>العقارات المتوفرة | الزير للعقارات</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Tajawal:wght@400;500;700&family=Inter:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/custom-select.css" />
+    <link rel="stylesheet" href="css/Real-Estate.css" />
+  </head>
+
+  <body>
+    <!-- ===== Header ===== -->
+    <header class="site-header">
+      <div class="logo">
+        <strong>الزير للعقارات</strong>
+        <span>AlZeer Real Estate</span>
+      </div>
+      <nav class="nav-links" id="navLinks">
+        <a href="index.html">الرئيسية</a>
+        <a href="#" aria-current="page">العقارات</a>
+        <a href="AboutUs.html">من نحن</a>
+      </nav>
+      <button
+        class="nav-toggle"
+        id="navToggle"
+        aria-label="فتح القائمة"
+        aria-expanded="false"
+        aria-controls="navLinks"
+      >
+        <span></span><span></span><span></span>
+      </button>
+    </header>
+
+    <!-- ===== Hero ===== -->
+    <section class="hero-strip">
+      <h1>تشكيلة <span>العقارات</span> المتوفرة</h1>
+      <p>
+        مجموعة مختارة من العقارات للبيع والإيجار بكافة المحافظات، بإكساء
+        مضمون وأسعار واضحة.
+      </p>
+      <div class="count-pill">
+        <span id="resultCount" class="num">0</span>
+        <span>عقار متوفر</span>
+      </div>
+    </section>
+
+    <!-- ===== محتوى الصفحة: بار جانبي ثابت للفلاتر + شبكة العقارات ===== -->
+    <div class="listing-shell">
+      <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+      <aside class="filters-sidebar" id="filtersSidebar" aria-label="فلاتر البحث">
+        <div class="sidebar-head">
+          <h3>الفلاتر</h3>
+          <button
+            class="sidebar-close"
+            id="sidebarClose"
+            type="button"
+            aria-label="إغلاق الفلاتر"
+          >
+            ×
+          </button>
+        </div>
+
+        <div class="filter-group">
+          <span>نوع العرض</span>
+          <div class="listing-toggle" id="listingToggle">
+            <button class="active" data-listing="all" type="button">الكل</button>
+            <button data-listing="sale" type="button">للبيع</button>
+            <button data-listing="rent" type="button">للإيجار</button>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <span>نوع العقار</span>
+          <div class="chips-vertical" id="filterChips">
+            <button class="chip active" data-filter="all">كل الأنواع</button>
+            <button class="chip" data-filter="شقة">شقة</button>
+            <button class="chip" data-filter="فيلا">فيلا</button>
+            <button class="chip" data-filter="محل تجاري">محل تجاري</button>
+            <button class="chip" data-filter="مكتب">مكتب</button>
+            <button class="chip" data-filter="أرض">أرض</button>
+            <button class="chip" data-filter="مستودع">مستودع</button>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <span>المنطقة</span>
+          <select id="regionSelect" class="js-custom-select">
+            <option value="all">كل المناطق</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <span>نطاق السعر ($)</span>
+          <div class="range-inputs">
+            <input type="number" id="priceMin" placeholder="من" min="0" />
+            <span>—</span>
+            <input type="number" id="priceMax" placeholder="إلى" min="0" />
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <span>نطاق المساحة (م²)</span>
+          <div class="range-inputs">
+            <input type="number" id="areaMin" placeholder="من" min="0" />
+            <span>—</span>
+            <input type="number" id="areaMax" placeholder="إلى" min="0" />
+          </div>
+        </div>
+
+        <button class="reset-filters" id="resetFilters" type="button">
+          تصفير الفلاتر
+        </button>
+      </aside>
+
+      <main class="listing-main">
+        <div class="listing-toolbar">
+          <div class="search-box">
+            <input type="text" id="searchInput" placeholder="ابحث عن عقار أو منطقة" />
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </svg>
+          </div>
+
+          <div class="listing-toolbar-right">
+            <select id="sortSelect" class="js-custom-select" data-cs-class="cs-pill">
+              <option value="default">الأحدث</option>
+              <option value="asc">السعر: من الأقل للأعلى</option>
+              <option value="desc">السعر: من الأعلى للأقل</option>
+              <option value="area">المساحة: الأكبر أولاً</option>
+            </select>
+
+            <button
+              class="filters-toggle"
+              id="filtersToggle"
+              type="button"
+              aria-expanded="false"
+              aria-controls="filtersSidebar"
+            >
+              <svg viewBox="0 0 24 24" stroke-width="2" fill="none">
+                <path d="M4 6h16M7 12h10M10 18h4"></path>
+              </svg>
+              فلاتر
+              <span class="filters-count" id="filtersCount" hidden>0</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ===== Grid العقارات ===== -->
+        <section class="properties-grid" id="propertiesGrid" aria-label="قائمة العقارات">
+          <!-- العقارات تُحمّل من SQLite عبر /api/properties -->
+        </section>
+
+        <div class="no-results" id="noResults">
+          <svg viewBox="0 0 24 24" stroke-width="1.6" fill="none">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </svg>
+          <strong id="noResultsTitle">ولا نتيجة مطابقة</strong>
+          <p id="noResultsText">جرب كلمة بحث ثانية أو غيّر الفلاتر المختارة.</p>
+        </div>
+      </main>
+    </div>
+
+    <!-- ===== Modal: تفاصيل العقار ===== -->
+    <div class="modal-overlay" id="modalOverlay">
+      <div class="modal-box">
+        <div class="modal-gallery">
+          <div class="modal-main-img">
+            <img id="modalImg" src="" alt="" />
+            <video id="modalVideo" controls style="display: none"></video>
+            <button class="gallery-close" id="galleryClose" aria-label="إغلاق">
+              ×
+            </button>
+            <button
+              class="gallery-nav prev"
+              id="galleryPrev"
+              aria-label="الصورة السابقة"
+            >
+              ‹
+            </button>
+            <button
+              class="gallery-nav next"
+              id="galleryNext"
+              aria-label="الصورة التالية"
+            >
+              ›
+            </button>
+            <span class="gallery-counter" id="galleryCounter"></span>
+          </div>
+          <div class="modal-thumbs" id="modalThumbs"></div>
+          <div class="modal-map" id="modalMapWrap">
+            <div class="modal-map-head">الموقع على الخريطة</div>
+            <iframe
+              id="modalMap"
+              class="modal-map-frame"
+              width="100%"
+              title="موقع العقار على خرائط غوغل"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowfullscreen
+            ></iframe>
+            <a
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="modal-map-btn"
+              id="modalMapLink"
+              >عرض الموقع على خرائط غوغل</a
+            >
+          </div>
+        </div>
+        <div class="modal-info">
+          <h2 id="modalName"></h2>
+          <div class="modal-tags" id="modalTags"></div>
+          <div class="modal-specs">
+            <span class="spec"
+              ><strong>المنطقة:</strong>&nbsp;<span id="modalRegion"></span
+            ></span>
+            <span class="spec"
+              ><strong>النوع:</strong>&nbsp;<span id="modalType"></span
+            ></span>
+            <span class="spec"
+              ><strong>المساحة:</strong>&nbsp;<span
+                id="modalArea"
+                class="num"
+              ></span
+              >&nbsp;م²</span
+            >
+            <span class="spec"
+              ><strong>الإكساء:</strong>&nbsp;<span id="modalFinish"></span
+            ></span>
+            <span class="spec"
+              ><strong>غرف النوم:</strong>&nbsp;<span
+                id="modalBedrooms"
+                class="num"
+              ></span
+            ></span>
+            <span class="spec"
+              ><strong>الحمامات:</strong>&nbsp;<span
+                id="modalBathrooms"
+                class="num"
+              ></span
+            ></span>
+          </div>
+          <p class="modal-desc" id="modalDesc"></p>
+          <div class="modal-price num" id="modalPrice"></div>
+          <a href="#" class="modal-cta" id="modalCta"
+            >تواصل معنا بخصوص هالعقار</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <strong>الزير للعقارات</strong>
+          <span>AlZeer Real Estate</span>
+          <p>
+            تشكيلة واسعة من العقارات للبيع والإيجار بأسعار منافسة، وخدمة
+            صادقة وشفافة من أول خطوة لتسليم المفتاح.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>أرقامنا</h4>
+          <ul class="footer-phones">
+            <li>
+              <a href="tel:0999999999">
+                <svg
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path
+                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"
+                  ></path>
+                </svg>
+                0999999999
+              </a>
+            </li>
+            <li>
+              <a href="tel:0888888888">
+                <svg
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path
+                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"
+                  ></path>
+                </svg>
+                0888888888
+              </a>
+            </li>
+            <li>
+              <a href="tel:0777777777">
+                <svg
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path
+                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"
+                  ></path>
+                </svg>
+                0777777777
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>تابعنا</h4>
+          <div class="footer-socials">
+            <a
+              class="social-btn facebook"
+              href="https://www.facebook.com/share/1HFxrRnPoR/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="صفحتنا على فيسبوك"
+            >
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.14 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.51 1.49-3.9 3.77-3.9 1.09 0 2.24.2 2.24.2v2.47h-1.26c-1.24 0-1.63.78-1.63 1.57v1.88h2.78l-.44 2.91h-2.34V22c4.78-.8 8.44-4.94 8.44-9.94Z"
+                ></path>
+              </svg>
+            </a>
+            <a
+              class="social-btn instagram"
+              href="https://www.instagram.com/almasre_cars1?igsh=eW95MzhqOXViam92"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="صفحتنا على انستغرام"
+            >
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M12 2c-2.72 0-3.06.01-4.12.06-1.06.05-1.79.22-2.43.47-.66.26-1.22.6-1.77 1.16-.56.55-.9 1.11-1.16 1.77-.25.64-.42 1.37-.47 2.43C2.01 8.94 2 9.28 2 12s.01 3.06.06 4.12c.05 1.06.22 1.79.47 2.43.26.66.6 1.22 1.16 1.77.55.56 1.11.9 1.77 1.16.64.25 1.37.42 2.43.47C8.94 21.99 9.28 22 12 22s3.06-.01 4.12-.06c1.06-.05 1.79-.22 2.43-.47.66-.26 1.22-.6 1.77-1.16.56-.55.9-1.11 1.16-1.77.25-.64.42-1.37.47-2.43.05-1.06.06-1.4.06-4.12s-.01-3.06-.06-4.12c-.05-1.06-.22-1.79-.47-2.43a4.9 4.9 0 0 0-1.16-1.77 4.9 4.9 0 0 0-1.77-1.16c-.64-.25-1.37-.42-2.43-.47C15.06 2.01 14.72 2 12 2Zm0 1.8c2.67 0 2.99.01 4.04.06.98.04 1.5.21 1.86.35.47.18.8.4 1.15.75.35.35.57.68.75 1.15.14.36.31.88.35 1.86.05 1.05.06 1.37.06 4.04s-.01 2.99-.06 4.04c-.04.98-.21 1.5-.35 1.86-.18.47-.4.8-.75 1.15-.35.35-.68.57-1.15.75-.36.14-.88.31-1.86.35-1.05.05-1.37.06-4.04.06s-2.99-.01-4.04-.06c-.98-.04-1.5-.21-1.86-.35a3.1 3.1 0 0 1-1.15-.75 3.1 3.1 0 0 1-.75-1.15c-.14-.36-.31-.88-.35-1.86C3.81 14.99 3.8 14.67 3.8 12s.01-2.99.06-4.04c.04-.98.21-1.5.35-1.86.18-.47.4-.8.75-1.15.35-.35.68-.57 1.15-.75.36-.14.88-.31 1.86-.35C9.01 3.81 9.33 3.8 12 3.8Zm0 3.2a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0 8.25a3.25 3.25 0 1 1 0-6.5 3.25 3.25 0 0 1 0 6.5Zm5.2-8.45a1.17 1.17 0 1 1-2.34 0 1.17 1.17 0 0 1 2.34 0Z"
+                ></path>
+              </svg>
+            </a>
+            <a
+              class="social-btn whatsapp"
+              href="https://whatsapp.com/channel/0029Vb72TVJ9mrGWmtcDu41w"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="مجموعتنا على واتساب"
+            >
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M17.47 14.38c-.29-.15-1.72-.85-1.98-.94-.27-.1-.46-.15-.66.14-.2.3-.75.94-.92 1.13-.17.2-.34.22-.63.08-.29-.15-1.22-.45-2.33-1.44-.86-.77-1.44-1.72-1.61-2.01-.17-.29-.02-.45.13-.6.13-.13.29-.34.44-.51.15-.17.2-.29.29-.49.1-.2.05-.37-.02-.51-.08-.15-.66-1.59-.9-2.18-.24-.57-.48-.5-.66-.51-.17-.01-.36-.01-.56-.01-.2 0-.51.07-.78.37-.27.3-1.02 1-1.02 2.43 0 1.43 1.04 2.82 1.19 3.01.15.2 2.05 3.13 4.97 4.39.69.3 1.24.48 1.66.61.7.22 1.34.19 1.84.12.56-.08 1.72-.7 1.97-1.38.24-.68.24-1.26.17-1.38-.07-.12-.27-.2-.56-.34Z"
+                ></path>
+                <path
+                  d="M12.04 2C6.54 2 2.05 6.48 2.05 12c0 1.87.51 3.63 1.4 5.13L2 22l4.99-1.31A9.95 9.95 0 0 0 12.04 22C17.54 22 22 17.52 22 12S17.54 2 12.04 2Zm0 18.1c-1.72 0-3.32-.5-4.66-1.36l-.33-.2-3.37.88.9-3.28-.22-.34a8.09 8.09 0 0 1-1.28-4.4c0-4.5 3.66-8.16 8.19-8.16 4.53 0 8.19 3.66 8.19 8.16 0 4.5-3.66 8.16-8.19 8.16Z"
+                ></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        © 2026 ALZEER REAL ESTATE | جميع الحقوق محفوظة
+      </div>
+    </footer>
+    <script src="js/common.js"></script>
+    <script src="js/custom-select.js"></script>
+    <script>
+      (() => {
+        const REGIONS = [
+          "دمشق", "ريف دمشق", "حلب", "حمص", "حماة", "اللاذقية",
+          "طرطوس", "إدلب", "درعا", "السويداء", "القنيطرة",
+          "دير الزور", "الرقة", "الحسكة",
+        ];
+
+        const propertiesGrid = document.getElementById("propertiesGrid");
+        const resultCount = document.getElementById("resultCount");
+        const noResults = document.getElementById("noResults");
+        const searchInput = document.getElementById("searchInput");
+        const sortSelect = document.getElementById("sortSelect");
+        const regionSelect = document.getElementById("regionSelect");
+        const priceMin = document.getElementById("priceMin");
+        const priceMax = document.getElementById("priceMax");
+        const areaMin = document.getElementById("areaMin");
+        const areaMax = document.getElementById("areaMax");
+        const resetFilters = document.getElementById("resetFilters");
+        const filterChips = [...document.querySelectorAll("#filterChips .chip")];
+        const listingButtons = [
+          ...document.querySelectorAll("#listingToggle button"),
+        ];
+        const filtersToggle = document.getElementById("filtersToggle");
+        const filtersSidebar = document.getElementById("filtersSidebar");
+        const sidebarBackdrop = document.getElementById("sidebarBackdrop");
+        const sidebarClose = document.getElementById("sidebarClose");
+        const filtersCount = document.getElementById("filtersCount");
+        const noResultsTitle = document.getElementById("noResultsTitle");
+        const noResultsText = document.getElementById("noResultsText");
+
+        const modalOverlay = document.getElementById("modalOverlay");
+        const modalImg = document.getElementById("modalImg");
+        const modalVideo = document.getElementById("modalVideo");
+        const modalName = document.getElementById("modalName");
+        const modalTags = document.getElementById("modalTags");
+        const modalRegion = document.getElementById("modalRegion");
+        const modalType = document.getElementById("modalType");
+        const modalArea = document.getElementById("modalArea");
+        const modalFinish = document.getElementById("modalFinish");
+        const modalBedrooms = document.getElementById("modalBedrooms");
+        const modalBathrooms = document.getElementById("modalBathrooms");
+        const modalDesc = document.getElementById("modalDesc");
+        const modalPrice = document.getElementById("modalPrice");
+        const modalCta = document.getElementById("modalCta");
+        const modalThumbs = document.getElementById("modalThumbs");
+        const modalMapWrap = document.getElementById("modalMapWrap");
+        const modalMap = document.getElementById("modalMap");
+        const modalMapLink = document.getElementById("modalMapLink");
+        const galleryPrev = document.getElementById("galleryPrev");
+        const galleryNext = document.getElementById("galleryNext");
+        const galleryClose = document.getElementById("galleryClose");
+        const galleryCounter = document.getElementById("galleryCounter");
+
+        let allProperties = [];
+        let activeType = "all";
+        let activeListing = "all";
+        let galleryItems = []; // [{type:'image'|'video', src:''}]
+        let galleryIndex = 0;
+
+        // تعبئة قائمة المناطق بالفلتر
+        regionSelect.innerHTML =
+          `<option value="all">كل المناطق</option>` +
+          REGIONS.map((r) => `<option value="${r}">${r}</option>`).join("");
+
+        function esc(value) {
+          return String(value ?? "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+        }
+
+        function number(value) {
+          return Number(value || 0).toLocaleString("en-US");
+        }
+
+        const homeIcon = `
+          <svg viewBox="0 0 24 24" stroke-width="2" fill="none">
+            <path d="m3 12 9-9 9 9"></path>
+            <path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"></path>
+          </svg>
+        `;
+        const areaIcon = `
+          <svg viewBox="0 0 24 24" stroke-width="2" fill="none">
+            <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+            <path d="M3 9h18M9 3v18"></path>
+          </svg>
+        `;
+        const bedIcon = `
+          <svg viewBox="0 0 24 24" stroke-width="2" fill="none">
+            <path d="M2 18v-6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v6"></path>
+            <path d="M2 18v3M22 18v3M2 12V6a2 2 0 0 1 2-2h4v8"></path>
+          </svg>
+        `;
+        const bathIcon = `
+          <svg viewBox="0 0 24 24" stroke-width="2" fill="none">
+            <path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-3Z"></path>
+            <path d="M6 12V6a2 2 0 0 1 3-1.7M4 19v2M18 19v2"></path>
+          </svg>
+        `;
+
+        function normalizeProperty(p) {
+          let images = [];
+
+          if (Array.isArray(p.images)) {
+            images = p.images;
+          } else if (typeof p.images === "string" && p.images.trim()) {
+            try {
+              images = JSON.parse(p.images);
+            } catch (_) {
+              images = [];
+            }
+          }
+
+          if (!images.length && p.image) {
+            images = [p.image];
+          }
+
+          return {
+            id: Number(p.id),
+            title: p.title || "عقار",
+            propertyType: p.property_type || "شقة",
+            listingType: p.listing_type || "sale",
+            listingLabel: p.listing_type_label || "بيع",
+            region: p.region || "",
+            address: p.address || p.location || "",
+            mapUrl: /^https:\/\//i.test(p.map_url || "") ? p.map_url : "",
+            latitude: p.latitude != null && p.latitude !== "" ? Number(p.latitude) : null,
+            longitude: p.longitude != null && p.longitude !== "" ? Number(p.longitude) : null,
+            price: Number(p.price || 0),
+            area: Number(p.area_sqm || 0),
+            bedrooms: Number(p.bedrooms || 0),
+            bathrooms: Number(p.bathrooms || 0),
+            finish: p.finish_quality || "ديلوكس",
+            status: p.status || "available",
+            image: p.image || images[0] || "",
+            images,
+            video: p.video || "",
+            desc:
+              p.description ||
+              "للمزيد من التفاصيل حول هذا العقار تواصل معنا مباشرة.",
+          };
+        }
+
+        function statusLabel(prop) {
+          if (prop.status === "reserved") return "محجوز";
+          if (prop.status === "sold") {
+            return prop.listingType === "rent" ? "مؤجر" : "مباع";
+          }
+          return prop.listingType === "rent" ? "متاح للإيجار" : "متاح للبيع";
+        }
+
+        function cardHtml(prop) {
+          return `
+            <article
+              class="property-card"
+              data-id="${prop.id}"
+              data-title="${esc(prop.title)}"
+              data-type="${esc(prop.propertyType)}"
+              data-listing="${esc(prop.listingType)}"
+              data-region="${esc(prop.region)}"
+              data-price="${prop.price}"
+              data-area="${prop.area}"
+            >
+              <div class="property-media">
+                <img
+                  src="${esc(prop.image)}"
+                  alt="${esc(prop.title)}"
+                  onerror="this.style.opacity='.22'"
+                />
+                <span class="badge listing-${prop.listingType === "rent" ? "rent" : "sale"}">${esc(statusLabel(prop))}</span>
+                <span class="badge-type">${esc(prop.propertyType)}</span>
+
+                <button class="fav-btn" aria-label="أضف للمفضلة" type="button">
+                  <svg viewBox="0 0 24 24" stroke-width="2">
+                    <path d="M12 21s-7.5-4.6-10-9C.3 8.5 2 4.5 6 4.5c2.2 0 3.7 1.3 6 3.6 2.3-2.3 3.8-3.6 6-3.6 4 0 5.7 4 4 7.5-2.5 4.4-10 9-10 9Z"></path>
+                  </svg>
+                </button>
+              </div>
+
+              <div class="property-body">
+                <h3>${esc(prop.title)}</h3>
+                <div class="property-region">
+                  ${homeIcon}
+                  <span>${esc(prop.region)}</span>
+                </div>
+
+                <div class="specs">
+                  <span class="spec">
+                    ${areaIcon}
+                    <span class="num">${number(prop.area)}</span> م²
+                  </span>
+
+                  <span class="spec">
+                    ${bedIcon}
+                    <span class="num">${prop.bedrooms}</span> غرف
+                  </span>
+
+                  <span class="spec">
+                    ${bathIcon}
+                    <span class="num">${prop.bathrooms}</span> حمام
+                  </span>
+
+                  <span class="spec">
+                    <svg viewBox="0 0 24 24" stroke-width="2" fill="none">
+                      <path d="M12 2 3 14h7l-1 8 10-12h-7l1-8Z"></path>
+                    </svg>
+                    ${esc(prop.finish)}
+                  </span>
+                </div>
+
+                <div class="price-row">
+                  <span class="price num">${number(prop.price)}</span>
+                  <button class="details-btn" type="button">التفاصيل</button>
+                </div>
+              </div>
+            </article>
+          `;
+        }
+
+        function skeletonCardHtml() {
+          return `
+            <div class="property-card skeleton-card" aria-hidden="true">
+              <div class="property-media skeleton"></div>
+              <div class="property-body">
+                <span class="skeleton skeleton-line" style="width:70%;height:1.1rem;"></span>
+                <span class="skeleton skeleton-line" style="width:45%;height:0.8rem;"></span>
+                <span class="skeleton skeleton-line" style="width:100%;height:2.2rem;"></span>
+                <span class="skeleton skeleton-line" style="width:40%;height:1.4rem;"></span>
+              </div>
+            </div>
+          `;
+        }
+
+        function renderSkeletons(count) {
+          noResults.classList.remove("show", "is-error");
+          propertiesGrid.innerHTML = Array.from({ length: count })
+            .map(skeletonCardHtml)
+            .join("");
+        }
+
+        function activeFiltersCount() {
+          let count = 0;
+          if (activeType !== "all") count++;
+          if (activeListing !== "all") count++;
+          if (regionSelect.value !== "all") count++;
+          if (priceMin.value || priceMax.value) count++;
+          if (areaMin.value || areaMax.value) count++;
+          return count;
+        }
+
+        function updateFiltersBadge() {
+          const count = activeFiltersCount();
+          filtersToggle.classList.toggle("active", count > 0);
+          filtersCount.hidden = count === 0;
+          filtersCount.textContent = count;
+        }
+
+        function getVisibleProperties() {
+          const q = searchInput.value.trim().toLowerCase();
+
+          let list = allProperties.filter((prop) => {
+            const matchesSearch =
+              prop.title.toLowerCase().includes(q) ||
+              prop.region.toLowerCase().includes(q);
+
+            const matchesType =
+              activeType === "all" || prop.propertyType === activeType;
+
+            const matchesListing =
+              activeListing === "all" || prop.listingType === activeListing;
+
+            const matchesRegion =
+              regionSelect.value === "all" || prop.region === regionSelect.value;
+
+            const pMin = Number(priceMin.value) || 0;
+            const pMax = Number(priceMax.value) || Infinity;
+            const matchesPrice = prop.price >= pMin && prop.price <= pMax;
+
+            const aMin = Number(areaMin.value) || 0;
+            const aMax = Number(areaMax.value) || Infinity;
+            const matchesArea = prop.area >= aMin && prop.area <= aMax;
+
+            return (
+              matchesSearch &&
+              matchesType &&
+              matchesListing &&
+              matchesRegion &&
+              matchesPrice &&
+              matchesArea
+            );
+          });
+
+          if (sortSelect.value === "asc") {
+            list.sort((a, b) => a.price - b.price);
+          } else if (sortSelect.value === "desc") {
+            list.sort((a, b) => b.price - a.price);
+          } else if (sortSelect.value === "area") {
+            list.sort((a, b) => b.area - a.area);
+          } else {
+            list.sort((a, b) => b.id - a.id);
+          }
+
+          return list;
+        }
+
+        function render() {
+          const list = getVisibleProperties();
+
+          resultCount.textContent = list.length;
+          noResults.classList.remove("is-error");
+          noResultsTitle.textContent = "ولا نتيجة مطابقة";
+          noResultsText.textContent = "جرب كلمة بحث ثانية أو غيّر الفلاتر المختارة.";
+          noResults.classList.toggle("show", list.length === 0);
+          propertiesGrid.innerHTML = list.map(cardHtml).join("");
+
+          bindCardEvents();
+          updateFiltersBadge();
+        }
+
+        function bindCardEvents() {
+          propertiesGrid.querySelectorAll(".property-card").forEach((card) => {
+            const id = Number(card.dataset.id);
+
+            card
+              .querySelector(".details-btn")
+              ?.addEventListener("click", () => openPropertyModal(id));
+
+            card
+              .querySelector(".fav-btn")
+              ?.addEventListener("click", (event) => {
+                event.stopPropagation();
+                event.currentTarget.classList.toggle("active");
+              });
+          });
+        }
+
+        function updateModalMap(prop) {
+          const hasCoords =
+            Number.isFinite(prop.latitude) && Number.isFinite(prop.longitude);
+
+          const query = hasCoords
+            ? `${prop.latitude},${prop.longitude}`
+            : [prop.address, prop.region, "سوريا"].filter(Boolean).join("، ");
+
+          if (!hasCoords && !prop.address && !prop.region) {
+            modalMapWrap.style.display = "none";
+            modalMap.src = "about:blank";
+            return;
+          }
+
+          const q = encodeURIComponent(query);
+          modalMapWrap.style.display = "";
+          modalMap.src = `https://www.google.com/maps?q=${q}&hl=ar&z=${hasCoords ? 16 : 12}&output=embed`;
+          modalMapLink.href =
+            prop.mapUrl ||
+            `https://www.google.com/maps/search/?api=1&query=${q}`;
+        }
+
+        function openPropertyModal(id) {
+          const prop = allProperties.find((item) => item.id === id);
+          if (!prop) return;
+
+          modalName.textContent = prop.title;
+          modalRegion.textContent = prop.region;
+          modalType.textContent = prop.propertyType;
+          modalArea.textContent = number(prop.area);
+          modalFinish.textContent = prop.finish;
+          modalBedrooms.textContent = prop.bedrooms;
+          modalBathrooms.textContent = prop.bathrooms;
+          modalDesc.textContent = prop.desc;
+          modalPrice.innerHTML = `${number(prop.price)} $ <span>${prop.listingType === "rent" ? "/ شهرياً" : ""}</span>`;
+
+          modalTags.innerHTML = `
+            <span class="modal-tag ${prop.listingType}">${esc(statusLabel(prop))}</span>
+            <span class="modal-tag">${esc(prop.finish)}</span>
+          `;
+
+          const firstPhone = document.querySelector(".footer-phones a");
+          if (firstPhone) {
+            modalCta.setAttribute("href", firstPhone.getAttribute("href"));
+          }
+
+          galleryItems = [
+            ...(prop.images.length ? prop.images : prop.image ? [prop.image] : []).map(
+              (src) => ({ type: "image", src })
+            ),
+            ...(prop.video ? [{ type: "video", src: prop.video }] : []),
+          ];
+
+          galleryIndex = 0;
+          renderGallery();
+          updateModalMap(prop);
+
+          modalOverlay.classList.add("open");
+          document.body.style.overflow = "hidden";
+        }
+
+        function closePropertyModal() {
+          modalOverlay.classList.remove("open");
+          modalVideo.pause();
+          modalMap.src = "about:blank";
+          document.body.style.overflow = "";
+        }
+
+        function renderGallery() {
+          if (!galleryItems.length) {
+            modalImg.removeAttribute("src");
+            modalImg.style.display = "block";
+            modalVideo.style.display = "none";
+            modalImg.alt = "لا توجد صورة";
+            galleryCounter.textContent = "0 / 0";
+            modalThumbs.innerHTML = "";
+            return;
+          }
+
+          const current = galleryItems[galleryIndex];
+
+          if (current.type === "video") {
+            modalVideo.src = current.src;
+            modalVideo.style.display = "block";
+            modalImg.style.display = "none";
+          } else {
+            modalVideo.pause();
+            modalVideo.style.display = "none";
+            modalImg.style.display = "block";
+            modalImg.src = current.src;
+          }
+
+          galleryCounter.textContent = `${galleryIndex + 1} / ${galleryItems.length}`;
+
+          modalThumbs.innerHTML = galleryItems
+            .map((item, index) => {
+              if (item.type === "video") {
+                return `
+                  <button
+                    type="button"
+                    class="${index === galleryIndex ? "active" : ""} video-thumb"
+                    data-index="${index}"
+                    aria-label="فيديو العقار"
+                  >▶</button>
+                `;
+              }
+              return `
+                <button
+                  type="button"
+                  class="${index === galleryIndex ? "active" : ""}"
+                  data-index="${index}"
+                  aria-label="صورة ${index + 1}"
+                >
+                  <img src="${esc(item.src)}" alt="" />
+                </button>
+              `;
+            })
+            .join("");
+
+          modalThumbs.querySelectorAll("button").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              galleryIndex = Number(btn.dataset.index);
+              renderGallery();
+            });
+          });
+        }
+
+        function applyIncomingFilters() {
+          const params = new URLSearchParams(window.location.search);
+          const listing = params.get("listing");
+          const type = params.get("type");
+          const q = params.get("q");
+
+          if (listing && ["all", "sale", "rent"].includes(listing)) {
+            activeListing = listing;
+            listingButtons.forEach((b) =>
+              b.classList.toggle("active", b.dataset.listing === listing)
+            );
+          }
+
+          if (type) {
+            activeType = type;
+            filterChips.forEach((c) =>
+              c.classList.toggle("active", c.dataset.filter === type)
+            );
+          }
+
+          if (q) {
+            searchInput.value = q;
+          }
+        }
+
+        async function loadProperties() {
+          try {
+            const response = await fetch("/api/properties", {
+              headers: { Accept: "application/json" },
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || data.success === false) {
+              throw new Error(data.error || "تعذر تحميل العقارات");
+            }
+
+            allProperties = (data.properties || []).map(normalizeProperty);
+
+            applyIncomingFilters();
+            render();
+          } catch (error) {
+            console.error(error);
+            propertiesGrid.innerHTML = "";
+            resultCount.textContent = "0";
+            noResultsTitle.textContent = "تعذر تحميل العقارات";
+            noResultsText.textContent =
+              "صار في مشكلة بالاتصال بالسيرفر، جرب تحدّث الصفحة بعد شوي.";
+            noResults.classList.add("show", "is-error");
+          }
+        }
+
+        filterChips.forEach((chip) => {
+          chip.addEventListener("click", () => {
+            filterChips.forEach((item) => item.classList.remove("active"));
+            chip.classList.add("active");
+            activeType = chip.dataset.filter || "all";
+            render();
+          });
+        });
+
+        listingButtons.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            listingButtons.forEach((item) => item.classList.remove("active"));
+            btn.classList.add("active");
+            activeListing = btn.dataset.listing || "all";
+            render();
+          });
+        });
+
+        [searchInput, priceMin, priceMax, areaMin, areaMax].forEach((el) =>
+          el.addEventListener("input", render)
+        );
+        [sortSelect, regionSelect].forEach((el) =>
+          el.addEventListener("change", render)
+        );
+
+        resetFilters.addEventListener("click", () => {
+          searchInput.value = "";
+          priceMin.value = "";
+          priceMax.value = "";
+          areaMin.value = "";
+          areaMax.value = "";
+          regionSelect.value = "all";
+          sortSelect.value = "default";
+          activeType = "all";
+          activeListing = "all";
+          filterChips.forEach((c) => c.classList.toggle("active", c.dataset.filter === "all"));
+          listingButtons.forEach((b) => b.classList.toggle("active", b.dataset.listing === "all"));
+          render();
+        });
+
+        filtersToggle.addEventListener("click", () => {
+          openSidebar();
+        });
+
+        function openSidebar() {
+          filtersSidebar.classList.add("open");
+          sidebarBackdrop.classList.add("open");
+          filtersToggle.setAttribute("aria-expanded", "true");
+          document.body.style.overflow = "hidden";
+        }
+
+        function closeSidebar() {
+          filtersSidebar.classList.remove("open");
+          sidebarBackdrop.classList.remove("open");
+          filtersToggle.setAttribute("aria-expanded", "false");
+          document.body.style.overflow = "";
+        }
+
+        sidebarClose.addEventListener("click", closeSidebar);
+        sidebarBackdrop.addEventListener("click", closeSidebar);
+
+        galleryClose.addEventListener("click", closePropertyModal);
+
+        modalOverlay.addEventListener("click", (event) => {
+          if (event.target === modalOverlay) closePropertyModal();
+        });
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") {
+            closePropertyModal();
+            closeSidebar();
+          }
+        });
+
+        galleryPrev.addEventListener("click", () => {
+          if (!galleryItems.length) return;
+          galleryIndex = (galleryIndex - 1 + galleryItems.length) % galleryItems.length;
+          renderGallery();
+        });
+
+        galleryNext.addEventListener("click", () => {
+          if (!galleryItems.length) return;
+          galleryIndex = (galleryIndex + 1) % galleryItems.length;
+          renderGallery();
+        });
+
+        renderSkeletons(8);
+        loadProperties();
+      })();
+    </script>
+  </body>
+</html>

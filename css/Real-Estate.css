@@ -1,0 +1,1037 @@
+/* ============================================
+   صفحة "العقارات المتوفرة" — Real-State.html
+   هوية بصرية فخمة: كحلي + ذهبي، حدود ناعمة،
+   بطاقات متفاعلة وتصميم متجاوب بالكامل
+============================================ */
+
+/* ===== Hero strip ===== */
+.hero-strip {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+  color: var(--white);
+  padding: 3.5rem 5% 3rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-strip::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 85% 20%,
+    rgba(206, 163, 85, 0.18),
+    transparent 55%
+  );
+  pointer-events: none;
+}
+
+.hero-strip h1 {
+  font-size: clamp(1.9rem, 4vw, 2.8rem);
+  font-weight: 800;
+  margin-bottom: 0.7rem;
+  position: relative;
+}
+
+.hero-strip h1 span {
+  color: var(--gold);
+}
+
+.hero-strip p {
+  color: #c7cad3;
+  max-width: 40rem;
+  margin: 0 auto 1.4rem;
+  font-size: 1rem;
+  position: relative;
+}
+
+.count-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(206, 163, 85, 0.15);
+  border: 1px solid var(--gold);
+  color: var(--gold-soft);
+  padding: 0.5rem 1.3rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  position: relative;
+}
+
+/* ============================================
+   تخطيط الصفحة: بار جانبي ثابت للفلاتر + عمود رئيسي
+============================================ */
+.listing-shell {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 2.2rem 5% 4rem;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 2.4rem;
+  align-items: start;
+}
+
+.sidebar-backdrop {
+  display: none;
+}
+
+/* ===== البار الجانبي (الفلاتر) ===== */
+.filters-sidebar {
+  position: sticky;
+  top: 5.5rem;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.6rem 1.4rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-height: calc(100vh - 7rem);
+  overflow-y: auto;
+}
+
+.sidebar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.sidebar-head h3 {
+  font-family: "Cairo", sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.sidebar-close {
+  display: none;
+  width: 2rem;
+  height: 2rem;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: var(--slate);
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.sidebar-close:hover {
+  background: var(--cream);
+  color: var(--navy);
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.filter-group > span {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--slate);
+}
+
+.chips-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.chips-vertical .chip {
+  width: 100%;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.chip {
+  background: var(--white);
+  border: 1.5px solid var(--gold);
+  color: var(--navy);
+  padding: 0.5rem 1.2rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  transition: all 0.2s ease;
+}
+
+.chip:hover {
+  background: rgba(206, 163, 85, 0.12);
+}
+
+.chip.active {
+  background: var(--gold);
+  color: var(--navy);
+  box-shadow: 0 4px 10px rgba(206, 163, 85, 0.35);
+}
+
+/* أزرار بيع / إيجار */
+.listing-toggle {
+  display: flex;
+  background: var(--cream);
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  padding: 3px;
+  gap: 3px;
+}
+
+.listing-toggle button {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 0.48rem 0.6rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--slate);
+  transition: all 0.2s ease;
+}
+
+.listing-toggle button.active {
+  background: var(--navy);
+  color: var(--white);
+}
+
+select#sortSelect,
+select#regionSelect {
+  font-family: inherit;
+  border: 1.5px solid var(--line);
+  background: var(--white);
+  border-radius: 8px;
+  padding: 0.6rem 1.1rem;
+  font-size: 0.88rem;
+  color: var(--ink);
+  width: 100%;
+}
+
+/* نطاقات السعر والمساحة */
+.range-inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.range-inputs input {
+  font-family: "Inter", sans-serif;
+  width: 100%;
+  min-width: 0;
+  border: 1.5px solid var(--line);
+  background: var(--white);
+  border-radius: 8px;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.85rem;
+}
+
+.range-inputs input:focus {
+  border-color: var(--gold);
+}
+
+.range-inputs span {
+  color: var(--slate);
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.reset-filters {
+  background: transparent;
+  border: 1.5px dashed var(--slate);
+  color: var(--slate);
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: center;
+}
+
+.reset-filters:hover {
+  border-color: var(--urgent);
+  color: var(--urgent);
+}
+
+/* ===== العمود الرئيسي: بحث/ترتيب + شبكة العقارات ===== */
+.listing-main {
+  min-width: 0;
+}
+
+.listing-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.8rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.listing-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.search-box {
+  position: relative;
+}
+
+.search-box input {
+  font-family: inherit;
+  border: 1.5px solid var(--line);
+  background: var(--white);
+  border-radius: 999px;
+  padding: 0.65rem 2.7rem 0.65rem 1.2rem;
+  font-size: 0.9rem;
+  width: 18rem;
+  max-width: 60vw;
+}
+
+.search-box input:focus {
+  border-color: var(--gold);
+}
+
+.search-box svg {
+  position: absolute;
+  left: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  stroke: var(--slate);
+}
+
+.listing-toolbar-right select#sortSelect {
+  width: auto;
+  border-radius: 999px;
+}
+
+/* زر إظهار الفلاتر — يظهر فقط على الموبايل (شوف الميديا كويري تحت) */
+.filters-toggle {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--white);
+  border: 1.5px solid var(--line);
+  color: var(--navy);
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  transition: all 0.2s ease;
+}
+
+.filters-toggle svg {
+  width: 17px;
+  height: 17px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+.filters-toggle.active {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: var(--white);
+}
+
+.filters-count {
+  background: var(--gold);
+  color: var(--navy);
+  font-size: 0.72rem;
+  font-weight: 800;
+  min-width: 1.3rem;
+  height: 1.3rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== Grid العقارات — Responsive حقيقي ===== */
+.properties-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.8rem;
+}
+
+@media (max-width: 1500px) {
+  .listing-shell {
+    grid-template-columns: 260px 1fr;
+  }
+}
+
+@media (max-width: 1200px) {
+  .properties-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .listing-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 8, 10, 0.55);
+    z-index: 190;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .sidebar-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .filters-sidebar {
+    position: fixed;
+    inset-inline-end: 0;
+    top: 0;
+    bottom: 0;
+    width: 85%;
+    max-width: 320px;
+    max-height: none;
+    border-radius: 0;
+    z-index: 200;
+    /* Docked via inset-inline-end (= physical left in RTL), so it must
+       translate in the negative direction to leave the viewport. */
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .filters-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-close {
+    display: inline-flex;
+  }
+
+  .filters-toggle {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 640px) {
+  .properties-grid {
+    grid-template-columns: 1fr;
+  }
+  .listing-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .search-box input {
+    width: 100%;
+    max-width: none;
+  }
+  .listing-toolbar-right {
+    justify-content: space-between;
+  }
+  .listing-toolbar-right select#sortSelect {
+    flex: 1;
+  }
+}
+
+/* ===== شاشات الموبايل الصغيرة جداً (iPhone SE, Galaxy Fold, إلخ) ===== */
+@media (max-width: 380px) {
+  .hero-strip {
+    padding: 2.4rem 6% 1.8rem;
+  }
+
+  .listing-shell {
+    padding: 1.6rem 5% 3rem;
+    gap: 1.6rem;
+  }
+
+  .properties-grid {
+    gap: 1.1rem;
+  }
+
+  .property-body {
+    padding: 1.1rem 1.1rem 1.3rem;
+  }
+
+  /* يمنع تصادم السعر مع زر "التفاصيل" إذا كان الرقم طويل */
+  .price-row {
+    flex-wrap: wrap;
+    row-gap: 0.6rem;
+  }
+
+  .details-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .chip {
+    padding: 0.45rem 0.9rem;
+    font-size: 0.82rem;
+  }
+
+  .filters-sidebar {
+    width: 92%;
+  }
+
+  .listing-toolbar-right {
+    flex-wrap: wrap;
+  }
+
+  .listing-toolbar-right select#sortSelect {
+    flex: 1 1 auto;
+  }
+}
+
+.no-results {
+  display: none;
+}
+
+.no-results.show {
+  display: flex;
+}
+
+/* بطاقات هيكلية (Skeleton) تظهر أثناء تحميل العقارات من السيرفر */
+.skeleton-card {
+  pointer-events: none;
+}
+
+.skeleton-card .property-media {
+  border-radius: 0;
+}
+
+.skeleton-card .skeleton-line + .skeleton-line {
+  margin-top: 0.6rem;
+}
+
+/* ============================================
+   بطاقة العقار (Property Card)
+   حدود ذهبية ناعمة + ظل فخم + تفاعل عند المرور
+============================================ */
+.property-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(206, 163, 85, 0.18);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.property-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--gold);
+}
+
+.property-media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+}
+
+.property-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.property-card:hover .property-media img {
+  transform: scale(1.08);
+}
+
+.property-media::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(12, 13, 16, 0.55) 0%,
+    transparent 40%
+  );
+  pointer-events: none;
+}
+
+.badge {
+  position: absolute;
+  top: 0.8rem;
+  inset-inline-start: 0.8rem;
+  background: var(--gold);
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 0.72rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  z-index: 1;
+}
+
+.badge.listing-sale {
+  background: #1f9d63;
+  color: var(--white);
+}
+
+.badge.listing-rent {
+  background: #2b6bd4;
+  color: var(--white);
+}
+
+.badge-type {
+  position: absolute;
+  bottom: 0.7rem;
+  inset-inline-start: 0.8rem;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 0.7rem;
+  padding: 0.28rem 0.65rem;
+  border-radius: 999px;
+  z-index: 1;
+}
+
+.fav-btn {
+  position: absolute;
+  top: 0.7rem;
+  inset-inline-end: 0.7rem;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+  z-index: 1;
+}
+
+.fav-btn:hover {
+  transform: scale(1.1);
+}
+
+.fav-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--navy);
+  fill: none;
+  transition:
+    fill 0.2s ease,
+    stroke 0.2s ease;
+}
+
+.fav-btn.active svg {
+  fill: #e0483f;
+  stroke: #e0483f;
+}
+
+.property-body {
+  padding: 1.3rem 1.4rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  flex: 1;
+}
+
+.property-body h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.property-region {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: var(--slate);
+  margin-top: -0.5rem;
+}
+
+.property-region svg {
+  width: 14px;
+  height: 14px;
+  stroke: var(--gold);
+  flex-shrink: 0;
+}
+
+.specs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem 0.8rem;
+}
+
+.spec {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--slate);
+}
+
+.spec svg {
+  width: 15px;
+  height: 15px;
+  stroke: var(--gold);
+  flex-shrink: 0;
+}
+
+.price-row {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line);
+}
+
+.price {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--gold-deep);
+}
+
+.price::before {
+  content: "$";
+  font-size: 0.9rem;
+  margin-inline-end: 2px;
+}
+
+.price-suffix {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--slate);
+  margin-inline-start: 0.2rem;
+}
+
+.details-btn {
+  background: var(--navy);
+  color: var(--white);
+  border: none;
+  padding: 0.55rem 1.1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: background 0.2s ease;
+}
+
+.details-btn:hover {
+  background: var(--gold);
+  color: var(--navy);
+}
+
+/* ============================================
+   Modal — تفاصيل العقار
+============================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(12, 13, 16, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  z-index: 100;
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-box {
+  background: var(--white);
+  border-radius: var(--radius);
+  max-width: 50rem;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  transform: translateY(16px) scale(0.98);
+  transition: transform 0.25s ease;
+  border: 1px solid rgba(206, 163, 85, 0.25);
+}
+
+.modal-gallery,
+.modal-info {
+  min-width: 0;
+}
+
+.modal-overlay.open .modal-box {
+  transform: translateY(0) scale(1);
+}
+
+@media (max-width: 700px) {
+  .modal-box {
+    grid-template-columns: 1fr;
+    max-height: 94vh;
+  }
+  .modal-main-img {
+    aspect-ratio: 16 / 10;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-overlay {
+    padding: 0.6rem;
+  }
+  .modal-info {
+    padding: 1.4rem 1.1rem;
+  }
+  .modal-specs {
+    grid-template-columns: 1fr;
+  }
+  .gallery-close,
+  .gallery-nav {
+    width: 40px;
+    height: 40px;
+    font-size: 1.4rem;
+  }
+  .modal-cta {
+    padding: 0.95rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* ===== Modal — معرض الصور والفيديو ===== */
+.modal-gallery {
+  display: flex;
+  flex-direction: column;
+  background: var(--navy);
+}
+
+.modal-main-img {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.modal-main-img img,
+.modal-main-img video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gallery-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--navy);
+  font-size: 1.2rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+  z-index: 2;
+}
+
+.gallery-nav:hover {
+  background: var(--white);
+}
+
+.gallery-close {
+  position: absolute;
+  top: 0.6rem;
+  inset-inline-end: 0.6rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(12, 13, 16, 0.65);
+  color: var(--white);
+  font-size: 1.3rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+  z-index: 3;
+}
+
+.gallery-close:hover {
+  background: var(--navy);
+}
+
+.gallery-nav.prev {
+  inset-inline-start: 0.6rem;
+}
+
+.gallery-nav.next {
+  inset-inline-end: 0.6rem;
+}
+
+.gallery-counter {
+  position: absolute;
+  bottom: 0.6rem;
+  inset-inline-end: 0.6rem;
+  background: rgba(12, 13, 16, 0.75);
+  color: var(--white);
+  font-family: "Inter", sans-serif;
+  font-size: 0.72rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  z-index: 2;
+}
+
+.modal-thumbs {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.6rem;
+  overflow-x: auto;
+}
+
+.modal-thumbs::-webkit-scrollbar {
+  height: 5px;
+}
+
+.modal-thumbs button {
+  flex: 0 0 auto;
+  width: 3.4rem;
+  height: 2.6rem;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  padding: 0;
+  opacity: 0.6;
+  transition:
+    opacity 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.modal-thumbs button.active {
+  opacity: 1;
+  border-color: var(--gold);
+}
+
+.modal-thumbs button.video-thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--navy-light);
+  color: var(--gold);
+}
+
+.modal-thumbs img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.modal-info {
+  padding: 2rem 1.8rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.modal-info h2 {
+  font-size: 1.5rem;
+  color: var(--navy);
+}
+
+.modal-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: -0.5rem;
+}
+
+.modal-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(206, 163, 85, 0.14);
+  color: var(--navy);
+  border: 1px solid rgba(206, 163, 85, 0.4);
+}
+
+.modal-tag.sale {
+  background: rgba(31, 157, 99, 0.12);
+  color: #1f9d63;
+  border-color: rgba(31, 157, 99, 0.4);
+}
+
+.modal-tag.rent {
+  background: rgba(43, 107, 212, 0.12);
+  color: #2b6bd4;
+  border-color: rgba(43, 107, 212, 0.4);
+}
+
+.modal-specs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 1rem 0;
+}
+
+.modal-specs .spec {
+  min-width: 0;
+  flex-wrap: wrap;
+  font-size: 0.88rem;
+  color: var(--ink);
+}
+
+.modal-desc {
+  font-size: 0.9rem;
+  color: var(--slate);
+  line-height: 1.8;
+  overflow-wrap: break-word;
+}
+
+.modal-price {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--gold-deep);
+}
+
+.modal-price span {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--slate);
+}
+
+.modal-cta {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  background: var(--gold);
+  color: var(--navy);
+  font-weight: 700;
+  padding: 0.8rem;
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+.modal-cta:hover {
+  background: var(--gold-soft);
+}
