@@ -43,8 +43,8 @@
     <section class="hero-strip">
       <h1>تشكيلة <span>العقارات</span> المتوفرة</h1>
       <p>
-        مجموعة مختارة من العقارات للبيع والإيجار بكافة المحافظات، بإكساء
-        مضمون وأسعار واضحة.
+        مجموعة مختارة من العقارات للبيع والإيجار بكافة المحافظات، بإكساء مضمون
+        وأسعار واضحة.
       </p>
       <div class="count-pill">
         <span id="resultCount" class="num">0</span>
@@ -56,7 +56,11 @@
     <div class="listing-shell">
       <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
-      <aside class="filters-sidebar" id="filtersSidebar" aria-label="فلاتر البحث">
+      <aside
+        class="filters-sidebar"
+        id="filtersSidebar"
+        aria-label="فلاتر البحث"
+      >
         <div class="sidebar-head">
           <h3>الفلاتر</h3>
           <button
@@ -72,7 +76,9 @@
         <div class="filter-group">
           <span>نوع العرض</span>
           <div class="listing-toggle" id="listingToggle">
-            <button class="active" data-listing="all" type="button">الكل</button>
+            <button class="active" data-listing="all" type="button">
+              الكل
+            </button>
             <button data-listing="sale" type="button">للبيع</button>
             <button data-listing="rent" type="button">للإيجار</button>
           </div>
@@ -124,7 +130,11 @@
       <main class="listing-main">
         <div class="listing-toolbar">
           <div class="search-box">
-            <input type="text" id="searchInput" placeholder="ابحث عن عقار أو منطقة" />
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="ابحث عن عقار أو منطقة"
+            />
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
               <circle cx="11" cy="11" r="7"></circle>
               <path d="m21 21-4.3-4.3"></path>
@@ -132,7 +142,11 @@
           </div>
 
           <div class="listing-toolbar-right">
-            <select id="sortSelect" class="js-custom-select" data-cs-class="cs-pill">
+            <select
+              id="sortSelect"
+              class="js-custom-select"
+              data-cs-class="cs-pill"
+            >
               <option value="default">الأحدث</option>
               <option value="asc">السعر: من الأقل للأعلى</option>
               <option value="desc">السعر: من الأعلى للأقل</option>
@@ -156,7 +170,11 @@
         </div>
 
         <!-- ===== Grid العقارات ===== -->
-        <section class="properties-grid" id="propertiesGrid" aria-label="قائمة العقارات">
+        <section
+          class="properties-grid"
+          id="propertiesGrid"
+          aria-label="قائمة العقارات"
+        >
           <!-- العقارات تُحمّل من SQLite عبر /api/properties -->
         </section>
 
@@ -267,8 +285,8 @@
           <strong>الزير للعقارات</strong>
           <span>AlZeer Real Estate</span>
           <p>
-            تشكيلة واسعة من العقارات للبيع والإيجار بأسعار منافسة، وخدمة
-            صادقة وشفافة من أول خطوة لتسليم المفتاح.
+            تشكيلة واسعة من العقارات للبيع والإيجار بأسعار منافسة، وخدمة صادقة
+            وشفافة من أول خطوة لتسليم المفتاح.
           </p>
         </div>
 
@@ -328,7 +346,7 @@
           <div class="footer-socials">
             <a
               class="social-btn facebook"
-              href="https://www.facebook.com/share/1HFxrRnPoR/"
+              href="https://www.facebook.com/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="صفحتنا على فيسبوك"
@@ -341,7 +359,7 @@
             </a>
             <a
               class="social-btn instagram"
-              href="https://www.instagram.com/almasre_cars1?igsh=eW95MzhqOXViam92"
+              href="https://www.instagram.com/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="صفحتنا على انستغرام"
@@ -354,7 +372,7 @@
             </a>
             <a
               class="social-btn whatsapp"
-              href="https://whatsapp.com/channel/0029Vb72TVJ9mrGWmtcDu41w"
+              href="https://whatsapp.com/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="مجموعتنا على واتساب"
@@ -381,9 +399,20 @@
     <script>
       (() => {
         const REGIONS = [
-          "دمشق", "ريف دمشق", "حلب", "حمص", "حماة", "اللاذقية",
-          "طرطوس", "إدلب", "درعا", "السويداء", "القنيطرة",
-          "دير الزور", "الرقة", "الحسكة",
+          "دمشق",
+          "ريف دمشق",
+          "حلب",
+          "حمص",
+          "حماة",
+          "اللاذقية",
+          "طرطوس",
+          "إدلب",
+          "درعا",
+          "السويداء",
+          "القنيطرة",
+          "دير الزور",
+          "الرقة",
+          "الحسكة",
         ];
 
         const propertiesGrid = document.getElementById("propertiesGrid");
@@ -397,7 +426,9 @@
         const areaMin = document.getElementById("areaMin");
         const areaMax = document.getElementById("areaMax");
         const resetFilters = document.getElementById("resetFilters");
-        const filterChips = [...document.querySelectorAll("#filterChips .chip")];
+        const filterChips = [
+          ...document.querySelectorAll("#filterChips .chip"),
+        ];
         const listingButtons = [
           ...document.querySelectorAll("#listingToggle button"),
         ];
@@ -507,8 +538,14 @@
             region: p.region || "",
             address: p.address || p.location || "",
             mapUrl: /^https:\/\//i.test(p.map_url || "") ? p.map_url : "",
-            latitude: p.latitude != null && p.latitude !== "" ? Number(p.latitude) : null,
-            longitude: p.longitude != null && p.longitude !== "" ? Number(p.longitude) : null,
+            latitude:
+              p.latitude != null && p.latitude !== ""
+                ? Number(p.latitude)
+                : null,
+            longitude:
+              p.longitude != null && p.longitude !== ""
+                ? Number(p.longitude)
+                : null,
             price: Number(p.price || 0),
             area: Number(p.area_sqm || 0),
             bedrooms: Number(p.bedrooms || 0),
@@ -653,7 +690,8 @@
               activeListing === "all" || prop.listingType === activeListing;
 
             const matchesRegion =
-              regionSelect.value === "all" || prop.region === regionSelect.value;
+              regionSelect.value === "all" ||
+              prop.region === regionSelect.value;
 
             const pMin = Number(priceMin.value) || 0;
             const pMax = Number(priceMax.value) || Infinity;
@@ -692,7 +730,8 @@
           resultCount.textContent = list.length;
           noResults.classList.remove("is-error");
           noResultsTitle.textContent = "ولا نتيجة مطابقة";
-          noResultsText.textContent = "جرب كلمة بحث ثانية أو غيّر الفلاتر المختارة.";
+          noResultsText.textContent =
+            "جرب كلمة بحث ثانية أو غيّر الفلاتر المختارة.";
           noResults.classList.toggle("show", list.length === 0);
           propertiesGrid.innerHTML = list.map(cardHtml).join("");
 
@@ -764,9 +803,12 @@
           }
 
           galleryItems = [
-            ...(prop.images.length ? prop.images : prop.image ? [prop.image] : []).map(
-              (src) => ({ type: "image", src })
-            ),
+            ...(prop.images.length
+              ? prop.images
+              : prop.image
+                ? [prop.image]
+                : []
+            ).map((src) => ({ type: "image", src })),
             ...(prop.video ? [{ type: "video", src: prop.video }] : []),
           ];
 
@@ -853,14 +895,14 @@
           if (listing && ["all", "sale", "rent"].includes(listing)) {
             activeListing = listing;
             listingButtons.forEach((b) =>
-              b.classList.toggle("active", b.dataset.listing === listing)
+              b.classList.toggle("active", b.dataset.listing === listing),
             );
           }
 
           if (type) {
             activeType = type;
             filterChips.forEach((c) =>
-              c.classList.toggle("active", c.dataset.filter === type)
+              c.classList.toggle("active", c.dataset.filter === type),
             );
           }
 
@@ -915,10 +957,10 @@
         });
 
         [searchInput, priceMin, priceMax, areaMin, areaMax].forEach((el) =>
-          el.addEventListener("input", render)
+          el.addEventListener("input", render),
         );
         [sortSelect, regionSelect].forEach((el) =>
-          el.addEventListener("change", render)
+          el.addEventListener("change", render),
         );
 
         resetFilters.addEventListener("click", () => {
@@ -931,8 +973,12 @@
           sortSelect.value = "default";
           activeType = "all";
           activeListing = "all";
-          filterChips.forEach((c) => c.classList.toggle("active", c.dataset.filter === "all"));
-          listingButtons.forEach((b) => b.classList.toggle("active", b.dataset.listing === "all"));
+          filterChips.forEach((c) =>
+            c.classList.toggle("active", c.dataset.filter === "all"),
+          );
+          listingButtons.forEach((b) =>
+            b.classList.toggle("active", b.dataset.listing === "all"),
+          );
           render();
         });
 
@@ -972,7 +1018,8 @@
 
         galleryPrev.addEventListener("click", () => {
           if (!galleryItems.length) return;
-          galleryIndex = (galleryIndex - 1 + galleryItems.length) % galleryItems.length;
+          galleryIndex =
+            (galleryIndex - 1 + galleryItems.length) % galleryItems.length;
           renderGallery();
         });
 
